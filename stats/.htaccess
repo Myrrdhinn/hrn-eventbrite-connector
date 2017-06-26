@@ -1,0 +1,15 @@
+AuthUserFile /www/virtual/tesseract/www.connector.hrn.io/stats/.htpasswd
+AuthGroupFile /dev/null
+AuthType Basic
+AuthName "Statistics information"
+
+SetEnvIf REFERER "^http://cp.webair.com/" valid_referer
+SetEnvIf REFERER "^https://cp.webair.com/" valid_referer
+Order Deny,Allow
+Deny from all
+Allow from env=valid_referer
+Allow from 209.200.8
+Allow from 96.57.35.235
+Allow from 174.137.148
+Require valid-user
+Satisfy any
