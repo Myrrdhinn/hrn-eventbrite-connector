@@ -47,3 +47,5 @@ Route::get('/callback', function()
 
     return Redirect::to('/');
 });
+
+Route::get('token', function(){ dd(Cache::get('forrest_token')); });

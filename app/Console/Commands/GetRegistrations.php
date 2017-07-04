@@ -2,7 +2,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
+use Forrest; 
+use Session;
 
 class GetRegistrations extends Command
 {
@@ -37,9 +38,13 @@ class GetRegistrations extends Command
 
     public function __construct(RegistrationsController $attendees)
     {
+
+
+        Forrest::authenticate();
+        
         parent::__construct();
 
-        $this->attendees = $attendees;
+       $this->attendees = $attendees;
     }
 
     /**
@@ -49,6 +54,7 @@ class GetRegistrations extends Command
      */
     public function handle()
     {
-        $this->info($this->attendees->index());
+	
+       $this->info($this->attendees->index());
     }
 }
