@@ -12,7 +12,7 @@ class RegistrationsController {
     	$attendeeID = [];
 
     	//subMinutes(5)
-		$attendeeList = Attendees::where('updated_at', '>=', Carbon::now()->subMinutes(10))->with('Questions')
+		$attendeeList = Attendees::where('updated_at', '>=', Carbon::now()->subHours(5))->with('Questions')
 		->orderBy('updated_at', 'DESC')
 		->get();
 

@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-         Commands\GetRegistrations::class
+         Commands\GetRegistrations::class,
+		 Commands\forrestauth::class
         
     ];
 
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('hrn:getregs')->everyTenMinutes();
+		$schedule->command('forrest:init')->hourly();
         // $schedule->command('inspire')
         //          ->hourly();
     }
