@@ -19,7 +19,7 @@ class RequestController extends Controller
                 //But in the end, we should always get attendee data 
                 switch ($payload['config']['action']) {
                     case 'order.placed':
-                        $moo = $client->request('GET', $payload['api_url'].'?expand=attendees.promotional_code', [
+                        $urlData = $client->request('GET', $payload['api_url'].'?expand=attendees.promotional_code', [
                             'headers' => [
                                 'Authorization' => 'Bearer '.config('app.eventbrite')
                             ]
@@ -27,7 +27,7 @@ class RequestController extends Controller
 
                         break;
                      case 'attendee.updated':
-                        $moo = $client->request('GET', $payload['api_url'], [
+                        $urlData = $client->request('GET', $payload['api_url'], [
                             'headers' => [
                                 'Authorization' => 'Bearer '.config('app.eventbrite')
                             ]
@@ -36,7 +36,7 @@ class RequestController extends Controller
                         break; 
 
                     default:
-                        $moo = $client->request('GET', $payload['api_url'].'?expand=attendees.promotional_code', [
+                        $urlData = $client->request('GET', $payload['api_url'].'?expand=attendees.promotional_code', [
                             'headers' => [
                                 'Authorization' => 'Bearer '.config('app.eventbrite')
                             ]
@@ -47,8 +47,8 @@ class RequestController extends Controller
 
 
 
-				if (isset($moo)){
-					$body = $moo->getBody();
+				if (isset($urlData)){
+					$body = $urlData->getBody();
 					$attendee = json_decode($body);
 
 					// $this->processData($attendee, $payload['config']['action']);
@@ -108,13 +108,13 @@ return $Hash.$fake;
     		 				'first_name' =>$attendee->profile->first_name,
     		 				'last_name' =>$attendee->profile->last_name,
     		 				'full_name' =>$attendee->profile->name,
-    		 				'work_phone' =>$attendee->profile->work_phone,
-    		 				'company' =>$attendee->profile->company,
+    		 				'work_phone' => $this->issetor($attendee->profile->work_phone),
+    		 				'company' => $this->issetor($attendee->profile->company),
     		 				'email' =>$attendee->profile->email,
-    		 				'fake_email' =>$this->GeraHash(8),
-    		 				'job_title' =>$attendee->profile->job_title,
-    		 				'city' =>$city,
-    		 				'postal_code' =>$postal_code,
+    		 				'fake_email' => $this->GeraHash(8),
+    		 				'job_title' => $this->issetor($attendee->profile->job_title),
+    		 				'city' => $this->issetor($city),
+    		 				'postal_code' => $postal_code,
     		 				'address' =>$address,
     		 				'country' =>$country,
     		 				'attendee_status' => $attendee->status,
@@ -182,6 +182,7 @@ return $Hash.$fake;
                                 $address = isset($data->profile->addresses->work->address_1) ? $data->profile->addresses->work->address_1 : null;
                                 $country = isset($data->profile->addresses->work->country) ? $data->profile->addresses->work->country : null;
                                 $discount = isset($data->promotional_code->code) ? $data->promotional_code->code : null;
+								$fakemail = isset($attendeeOne->fake_email) ? $attendeeOne->fake_email : $this->GeraHash(8);
                                 
 
                                 Attendees::create([
@@ -194,7 +195,7 @@ return $Hash.$fake;
                                     'work_phone' =>$data->profile->work_phone,
                                     'company' =>$data->profile->company,
                                     'email' =>$data->profile->email,
-                                    'fake_email' =>$attendeeOne->fake_email,
+                                    'fake_email' => $fakemail,
                                     'job_title' =>$data->profile->job_title,
                                     'city' =>$city,
                                     'postal_code' =>$postal_code,
@@ -265,4 +266,8 @@ return $Hash.$fake;
     		 }
 
    } 
+   
+   	public function issetor(&$var, $default = '.') {
+   		 return isset($var) ? $var : $default;
+	}
 }

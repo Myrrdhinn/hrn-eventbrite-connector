@@ -42,7 +42,7 @@ class forrestauth extends Command
      */
     public function handle()
     {
-      return Forrest::authenticate();
+      return Forrest::refresh();
 	
     }
 }
