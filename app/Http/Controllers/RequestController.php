@@ -227,9 +227,9 @@ return $Hash.$fake;
                                 Attendees::where('user_id', $data->id)
                                     ->orderBy('created_at', 'desc')
                                     ->update([
-                                    'work_phone' =>$data->profile->work_phone,
-                                    'company' =>$data->profile->company,
-                                    'job_title' =>$data->profile->job_title,
+                                    'work_phone' => $this->issetor($data->profile->work_phone),
+                                    'company' => $this->issetor($data->profile->company),
+                                    'job_title' => $this->issetor($data->profile->job_title),
                                     'city' =>$city,
                                     'postal_code' =>$postal_code,
                                     'address' =>$address,
