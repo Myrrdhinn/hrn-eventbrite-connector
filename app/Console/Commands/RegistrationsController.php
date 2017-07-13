@@ -2,8 +2,11 @@
 namespace App\Console\Commands;
 use \App\Attendees;
 use \App\Questions;
+use \App\SalesTeam;
 use Carbon\Carbon;
-use Forrest; 
+use Forrest;
+use Illuminate\Notifications\Notifiable;
+use App\Notifications\Refund; 
 
 class RegistrationsController {
 	
@@ -12,10 +15,9 @@ class RegistrationsController {
     	$attendeeID = [];
 
     	//subMinutes(5)
-		$attendeeList = Attendees::where('updated_at', '>=', Carbon::now()->subHours(5))->with('Questions')
+		$attendeeList = Attendees::where('updated_at', '>=', Carbon::now()->subMinutes(10))->with('Questions')
 		->orderBy('updated_at', 'DESC')
 		->get();
-
 
 		foreach ($attendeeList as $key => $attendees) {
 
@@ -32,7 +34,7 @@ class RegistrationsController {
 			'Title' => $attendees->job_title, //Job title
 			'Industry' => $this->QuestionHandler($attendees, 'industry'), //Industry
 			'CurrencyIsoCode' => 'EUR', //Currency 
-			'OwnerId' => '005D0000002fz5j',
+			//'OwnerId' => '005D0000002fz5j',
 			'Eventbrite_Order_Id__c' => $attendees->order_id, //Order Id		
 			'City' => $attendees->city, //City
 			"CountryCode" => $attendees->country,
@@ -52,10 +54,27 @@ class RegistrationsController {
 
 				//send the data to pardot
 				//$this->sendData($data);
-	Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/'.$attendees->user_id,[
+Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/'.$attendees->user_id,[
     'method' => 'PATCH',
     'body'   => $data]);
 	
+	
+		if ( $attendees->refunded != "FALSE"){
+				
+			$Owner_RAW = Forrest::query("SELECT OwnerId FROM Lead WHERE Eventbrite_Attendee_ID__c='".$attendees->user_id."'");
+			if (isset($Owner_RAW['records'][0]['OwnerId'])){
+				  $owner = $Owner_RAW['records'][0]['OwnerId'];
+				  $this->notification($attendees, $owner);
+			}else {
+				$Owner_Cont = Forrest::query("SELECT OwnerId FROM Contact WHERE Eventbrite_Attendee_ID__c='".$attendees->user_id."'");
+				if (isset($Owner_Cont['records'][0]['OwnerId'])){
+				  $owner = $Owner_Cont['records'][0]['OwnerId'];
+				  $this->notification($attendees, $owner);
+				}
+			}			
+			
+	
+	}	
 
 			
 		}
@@ -90,6 +109,12 @@ class RegistrationsController {
         }     
 	}	
 
+public function notification($data, $owner){
 
+
+		//\Notification::send(SalesTeam::where('sales_userid', '=', $owner)->get(), new Refund($data));
+		
+
+}
 
 }
