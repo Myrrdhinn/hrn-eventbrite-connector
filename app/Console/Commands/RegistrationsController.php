@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Forrest;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\Refund; 
+use App\Notifications\OrderUpdates; 
 
 class RegistrationsController {
 	
@@ -57,7 +58,7 @@ class RegistrationsController {
 Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/'.$attendees->user_id,[
     'method' => 'PATCH',
     'body'   => $data]);
-	
+
 	
 		if ( $attendees->refunded != "FALSE"){
 				
@@ -82,6 +83,8 @@ Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/'.$attendees->user_id,[
 		//return $attendeeList;
 
 		//config('eventbrite.questions')
+
+		$this->emailUpdate($attendeeList);
 		
     }
 
@@ -114,6 +117,57 @@ public function notification($data, $owner){
 
 		//\Notification::send(SalesTeam::where('sales_userid', '=', $owner)->get(), new Refund($data));
 		
+
+}
+
+public function emailUpdate($attendeeList){
+
+if (isset($attendeeList[0])){
+
+$AttendeeData = [];
+
+	foreach ($attendeeList as $key => $att) {
+		$TempContainer = [];
+
+		$TempAttendee = Attendees::where('user_id', '=', $att->user_id)
+		->orderBy('updated_at', 'DESC')
+		->limit(2)
+		->get();
+
+		$TempContainer = new \stdClass;
+		if($TempAttendee[0]->payload_mode != 'attendee.updated_misc'){
+			//Make sure we only send email notification if something significant happens like a name or phone update
+			//If it just a question update, then no one cares :P
+			
+				$TempContainer->updated = $TempAttendee[0];
+
+				if (isset($TempAttendee[1])){
+					$TempContainer->original = $TempAttendee[0];
+				}
+
+
+
+				$Id_RAW = Forrest::query("SELECT Id FROM Lead WHERE Eventbrite_Attendee_ID__c='".$att->user_id."'");
+				if (isset($Id_RAW['records'][0]['Id'])){
+					  $Id = $Id_RAW['records'][0]['Id'];
+					  $TempContainer->salesforce = $Id;
+				}
+
+				
+				array_push($AttendeeData, $TempContainer);
+
+		}
+
+
+	}
+
+	
+	$attmodel = \App\Attendees::first();
+
+	$attmodel->notify(new OrderUpdates($AttendeeData));
+
+} 
+	
 
 }
 

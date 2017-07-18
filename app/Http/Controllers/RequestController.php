@@ -175,7 +175,7 @@ return $Hash.$fake;
                         //If critical fields not matching, aka, the ticket owner is replaced with an another,
                         //we create a new entry to be able to show it in event log
                         //if not, we just simply update the current entry
-                        if(($attendeeOne[0]['first_name'] != $data->profile->first_name) || ($attendeeOne[0]['last_name'] != $data->profile->last_name) || ($attendeeOne[0]['email'] != $data->profile->email) || ($attendeeOne[0]['attendee_status'] != $data->status)){
+                        if(($attendeeOne[0]['first_name'] != $data->profile->first_name) || ($attendeeOne[0]['last_name'] != $data->profile->last_name) || ($attendeeOne[0]['work_phone'] != $data->profile->work_phone) || ($attendeeOne[0]['email'] != $data->profile->email) || ($attendeeOne[0]['attendee_status'] != $data->status)){
 
                                 $city = isset($data->profile->addresses->work->city) ? $data->profile->addresses->work->city : null;
                                 $postal_code = isset($data->profile->addresses->work->postal_code) ? $data->profile->addresses->work->postal_code : null;
@@ -241,7 +241,7 @@ return $Hash.$fake;
                                     'ticket_payment_fee' =>$data->costs->payment_fee->major_value,
                                     'ticket_tax' => $data->costs->tax->major_value,
                                     'ticket_gross' => $data->costs->gross->major_value,
-                                    'payload_mode' => $mode
+                                    'payload_mode' => 'attendee.updated_misc'
                                     ]);
 
                                     foreach ($data->answers as $akey => $questions) {

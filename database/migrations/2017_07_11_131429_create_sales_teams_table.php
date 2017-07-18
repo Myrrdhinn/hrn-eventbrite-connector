@@ -16,6 +16,7 @@ class CreateSalesTeamsTable extends Migration
         Schema::create('sales_teams', function (Blueprint $table) {
             $table->increments('id');
 			$table->string('sales_full_name')->nullable();
+			$table->string('email')->nullable();
 			$table->string('sales_userid')->nullable();
 			$table->string('slack_webhook')->nullable();
 			$table->string('slack_username')->nullable();
