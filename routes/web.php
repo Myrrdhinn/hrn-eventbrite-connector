@@ -11,29 +11,15 @@
 |
 */
 
+//Default Index page (there's nothing there atm :) )
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::any('/request', 'RequestController@index'); //Eventbrite webhook receiver
+//Eventbrite webhook receiver
+Route::any('/request', 'RequestController@index'); 
 
-Route::any('/test', 'TestController@index'); //tester.. display stuff from database
-
-Route::get('/list', 'ListController@index'); //WIP Sales UI
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home'); //Default Laravel.. will be deleted.. :D
-
-Route::get('/sftest', 'Salesforce@index'); //sf test route
-
-//Salesforce Api Routes
-
-/*Route::get('/authenticate', function()
-{
-    return Forrest::authenticate();
-});*/
-
+//Salesforce Autentication
 Route::get('/authenticate', function()
 {
     $loginURL = 'https://test.salesforce.com';
@@ -41,6 +27,7 @@ Route::get('/authenticate', function()
     return Forrest::authenticate($loginURL);
 });
 
+//Callback for the Salesforce Autentication
 Route::get('/callback', function()
 {
     Forrest::callback();
@@ -48,4 +35,26 @@ Route::get('/callback', function()
     return Redirect::to('/');
 });
 
+//Check the token from Autentication
 Route::get('token', function(){ dd(Cache::get('forrest_token')); });
+
+
+//WIP Sales UI, currently not used
+Route::get('/list', 'ListController@index'); 
+
+//tester.. display stuff from database
+Route::any('/test', 'TestController@index'); 
+
+//Basic authentication routes for laravel
+Auth::routes();
+
+//sf test route (for query testing
+Route::get('/sftest', 'Salesforce@index'); 
+
+//Default Laravel.. login route.. we don't need this atm
+//Route::get('/home', 'HomeController@index')->name('home'); 
+
+
+
+
+

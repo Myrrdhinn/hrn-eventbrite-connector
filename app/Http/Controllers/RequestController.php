@@ -56,7 +56,7 @@ class RequestController extends Controller
 				}
 					
 			} else {
-			  echo 'Moo!';
+			  echo 'Oops! Something went wrong! There is no Api URL in the Request!';
 			}
 			 
 
@@ -164,6 +164,7 @@ return $Hash.$fake;
     		 		break;     		 		  
       		 	case 'attendee.updated':
                      $attendeeOne = Attendees::where('user_id', $data->id)
+					 ->where('created_at','>', Carbon::now()->subMinutes(2))
                      ->orderBy('created_at','DESC')
                      ->limit(1)
 					 ->get();

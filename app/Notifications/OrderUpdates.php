@@ -47,7 +47,9 @@ class OrderUpdates extends Notification
     public function toMail($notifiable)
     {
 
-           return (new MailMessage)->view(
+           return (new MailMessage)
+		   ->subject('Eventbrite Updates')
+		   ->view(
         'email_order', ['attendees' => $this->attendees]
     );
     }

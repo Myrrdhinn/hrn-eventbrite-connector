@@ -11,8 +11,9 @@
               <h2>New Order</h2>
             @elseif ($attendee->updated->payload_mode == 'attendee.updated') 
               <h2>Order Updated</h2>
+            @elseif ($attendee->updated->payload_mode == 'order.refunded') 
+              <h2>Order Refunded</h2>              
             @endif
-           
               
             </th></tr></table></th>
           </tr></tbody></table>
@@ -36,6 +37,7 @@
 			  <p><strong>Email: </strong>{{ $attendee->updated->email }}</p>
 			  <p><strong>Title: </strong>{{ $attendee->updated->job_title }}</p>
               <p><strong>Company: </strong>{{ $attendee->updated->company }}</p>
+			  <p><strong>Phone: </strong>{{ $attendee->updated->work_phone }}</p>
               <p><strong>Ticket: </strong>{{ $attendee->updated->ticket_type }}</p>
 			  <p><strong>Discount: </strong>{{ $attendee->updated->discount_code }}</p>
               <p><strong>Status: </strong>{{ $attendee->updated->attendee_status }}</p>
@@ -49,6 +51,7 @@
 			  <p><strong>Email: </strong>{{ $attendee->original->email }}</p>
 			  <p><strong>Title: </strong>{{ $attendee->original->job_title }}</p>
               <p><strong>Company: </strong>{{ $attendee->original->company }}</p>
+			  <p><strong>Phone: </strong>{{ $attendee->original->work_phone }}</p>
               <p><strong>Ticket: </strong>{{ $attendee->original->ticket_type }}</p>
 			  <p><strong>Discount: </strong>{{ $attendee->original->discount_code }}</p>
               <p><strong>Status: </strong>{{ $attendee->original->attendee_status }}</p>
