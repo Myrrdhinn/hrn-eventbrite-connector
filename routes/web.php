@@ -22,7 +22,7 @@ Route::any('/request', 'RequestController@index');
 //Salesforce Autentication
 Route::get('/authenticate', function()
 {
-    $loginURL = 'https://test.salesforce.com';
+    $loginURL = 'https://login.salesforce.com';
 
     return Forrest::authenticate($loginURL);
 });

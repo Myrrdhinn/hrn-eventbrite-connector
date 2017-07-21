@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use \GuzzleHttp\Client;
 use \App\Attendees;
 use \App\Questions;
+use \Carbon\Carbon;
 
 class RequestController extends Controller
 {
@@ -164,7 +165,7 @@ return $Hash.$fake;
     		 		break;     		 		  
       		 	case 'attendee.updated':
                      $attendeeOne = Attendees::where('user_id', $data->id)
-					 ->where('created_at','>', Carbon::now()->subMinutes(2))
+					 ->whereDate('created_at','>', Carbon::now()->subMinutes(2))
                      ->orderBy('created_at','DESC')
                      ->limit(1)
 					 ->get();

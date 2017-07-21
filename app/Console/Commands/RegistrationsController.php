@@ -50,6 +50,8 @@ class RegistrationsController {
 			'authorized_person_budget__c' => $this->QuestionHandler($attendees, 'finance'),
 			'job_title_of_direct_boss__c' => $this->QuestionHandler($attendees, 'boss'),
 			'Key_investment_areas__c' => $this->QuestionHandler($attendees, 'interests'),
+			'LeadSource' => $this->getSource($attendees),
+			'Hidden_Source__c' => $this->getSource($attendees)
 	];				
 
 
@@ -161,10 +163,13 @@ $AttendeeData = [];
 
 	}
 
+	if ($AttendeeData){
 	
-	$attmodel = \App\Attendees::first();
+		$attmodel = \App\Attendees::first();
 
-	$attmodel->notify(new OrderUpdates($AttendeeData));
+		$attmodel->notify(new OrderUpdates($AttendeeData));
+	}
+
 
 } 
 	
