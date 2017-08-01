@@ -51,9 +51,15 @@ class RequestController extends Controller
 				if (isset($urlData)){
 					$body = $urlData->getBody();
 					$attendee = json_decode($body);
-
-					// $this->processData($attendee, $payload['config']['action']);
-					$this->processData($attendee, $payload['config']['action']);			 
+					
+					//Check if attendee is existing or not
+					if(isset($attendee->status_code) && $attendee->status_code == 404){
+						echo "Attendee Not found! :(";
+					} else {
+						$this->processData($attendee, $payload['config']['action']);	
+					}
+					
+							 
 				}
 					
 			} else {
@@ -148,14 +154,15 @@ return $Hash.$fake;
     		 		break;
       		 	case 'order.refunded':
     		 		//$attendees->refund($data);
-
-                    Attendees::where('user_id', $data->id)
+				foreach ($data->attendees as $key => $attendee) {
+                    Attendees::where('user_id', $attendee->id)
                         ->orderBy('updated_at', 'desc')
                         ->update([
                         'refunded' =>'TRUE',
-                        'attendee_status' => $data->status,
+                        'attendee_status' => $attendee->status,
                         'payload_mode' => $mode
                         ]);
+					}
 
     		 		//Esetleg notification handler ide
     		 		break;
