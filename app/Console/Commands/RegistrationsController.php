@@ -7,7 +7,9 @@ use Carbon\Carbon;
 use Forrest;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\Refund; 
-use App\Notifications\OrderUpdates; 
+use App\Notifications\OrderUpdates;
+use Illuminate\Support\Facades\Log; 
+use GuzzleHttp\Exception\ClientException;
 
 class RegistrationsController {
 	
@@ -17,7 +19,7 @@ class RegistrationsController {
 
     	//subMinutes(5)
 		$attendeeList = Attendees::where('updated_at', '>=', Carbon::now()->subMinutes(10))->with('Questions')
-		->orderBy('updated_at', 'DESC')
+		->orderBy('updated_at', 'ASC')
 		->get();
 
 		foreach ($attendeeList as $key => $attendees) {
@@ -144,16 +146,19 @@ $AttendeeData = [];
 				$TempContainer->updated = $TempAttendee[0];
 
 				if (isset($TempAttendee[1])){
-					$TempContainer->original = $TempAttendee[0];
+					$TempContainer->original = $TempAttendee[1];
 				}
 
+				$TempContainer->salesforce = '';
 
+				
+					$Id_RAW = Forrest::query("SELECT Id FROM Lead WHERE Eventbrite_Attendee_ID__c='".$att->user_id."'");
 
-				$Id_RAW = Forrest::query("SELECT Id FROM Lead WHERE Eventbrite_Attendee_ID__c='".$att->user_id."'");
-				if (isset($Id_RAW['records'][0]['Id'])){
-					  $Id = $Id_RAW['records'][0]['Id'];
-					  $TempContainer->salesforce = $Id;
-				}
+					if (isset($Id_RAW['records'][0]['Id'])){
+						  $Id = $Id_RAW['records'][0]['Id'];
+						  $TempContainer->salesforce = $Id;
+					}
+				
 
 				
 				array_push($AttendeeData, $TempContainer);
