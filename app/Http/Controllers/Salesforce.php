@@ -69,7 +69,7 @@ $ContactSearch = Forrest::parameterizedSearch([
 	}	 
 */
 
-	
+	/*
     $arrayone = [
 			'Phone' => '123123-123123', //Genereal Phone
 			'FirstName' => 'Hihi', //First Name
@@ -129,7 +129,9 @@ $ContactSearch = Forrest::parameterizedSearch([
 Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/793682695',[
     'method' => 'PATCH',
     'body'   => $array2]);
+	*/
 	
+return Forrest::query("SELECT OwnerID FROM Lead WHERE Eventbrite_Attendee_ID__c='810780180'");	
 	
 	}	
 }

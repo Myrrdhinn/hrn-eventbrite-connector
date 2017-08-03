@@ -3,10 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Attendees extends Model
 {
-
+   use Notifiable;
 	protected $fillable = [ 'user_id',
     		 				'order_id',
     		 				'event_id',
@@ -42,6 +43,11 @@ class Attendees extends Model
     public function store($data){
 
 
+    }
+	
+	public function routeNotificationForMail()
+    {
+        return env('NOTIF_TARGET_EMAIL', 'hello@example.com');
     }
 
 }

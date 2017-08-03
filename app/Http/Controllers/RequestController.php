@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use \GuzzleHttp\Client;
 use \App\Attendees;
 use \App\Questions;
+use \Carbon\Carbon;
 
 class RequestController extends Controller
 {
@@ -50,13 +51,19 @@ class RequestController extends Controller
 				if (isset($urlData)){
 					$body = $urlData->getBody();
 					$attendee = json_decode($body);
-
-					// $this->processData($attendee, $payload['config']['action']);
-					$this->processData($attendee, $payload['config']['action']);			 
+					
+					//Check if attendee is existing or not
+					if(isset($attendee->status_code) && $attendee->status_code == 404){
+						echo "Attendee Not found! :(";
+					} else {
+						$this->processData($attendee, $payload['config']['action']);	
+					}
+					
+							 
 				}
 					
 			} else {
-			  echo 'Moo!';
+			  echo 'Oops! Something went wrong! There is no Api URL in the Request!';
 			}
 			 
 
@@ -147,14 +154,15 @@ return $Hash.$fake;
     		 		break;
       		 	case 'order.refunded':
     		 		//$attendees->refund($data);
-
-                    Attendees::where('user_id', $data->id)
+				foreach ($data->attendees as $key => $attendee) {
+                    Attendees::where('user_id', $attendee->id)
                         ->orderBy('updated_at', 'desc')
                         ->update([
                         'refunded' =>'TRUE',
-                        'attendee_status' => $data->status,
+                        'attendee_status' => $attendee->status,
                         'payload_mode' => $mode
                         ]);
+					}
 
     		 		//Esetleg notification handler ide
     		 		break;
@@ -164,6 +172,7 @@ return $Hash.$fake;
     		 		break;     		 		  
       		 	case 'attendee.updated':
                      $attendeeOne = Attendees::where('user_id', $data->id)
+					 ->whereDate('created_at','>', Carbon::now()->subMinutes(2))
                      ->orderBy('created_at','DESC')
                      ->limit(1)
 					 ->get();
@@ -175,7 +184,7 @@ return $Hash.$fake;
                         //If critical fields not matching, aka, the ticket owner is replaced with an another,
                         //we create a new entry to be able to show it in event log
                         //if not, we just simply update the current entry
-                        if(($attendeeOne[0]['first_name'] != $data->profile->first_name) || ($attendeeOne[0]['last_name'] != $data->profile->last_name) || ($attendeeOne[0]['email'] != $data->profile->email) || ($attendeeOne[0]['attendee_status'] != $data->status)){
+                        if(($attendeeOne[0]['first_name'] != $data->profile->first_name) || ($attendeeOne[0]['last_name'] != $data->profile->last_name) || ($attendeeOne[0]['work_phone'] != $data->profile->work_phone) || ($attendeeOne[0]['email'] != $data->profile->email) || ($attendeeOne[0]['attendee_status'] != $data->status)){
 
                                 $city = isset($data->profile->addresses->work->city) ? $data->profile->addresses->work->city : null;
                                 $postal_code = isset($data->profile->addresses->work->postal_code) ? $data->profile->addresses->work->postal_code : null;
@@ -241,7 +250,7 @@ return $Hash.$fake;
                                     'ticket_payment_fee' =>$data->costs->payment_fee->major_value,
                                     'ticket_tax' => $data->costs->tax->major_value,
                                     'ticket_gross' => $data->costs->gross->major_value,
-                                    'payload_mode' => $mode
+                                    'payload_mode' => 'attendee.updated_misc'
                                     ]);
 
                                     foreach ($data->answers as $akey => $questions) {
