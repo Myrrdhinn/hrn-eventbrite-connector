@@ -59,7 +59,8 @@ class RegistrationsController {
 
 				//send the data to pardot
 				//$this->sendData($data);
-Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/'.$attendees->user_id,[
+			
+ Forrest::sobjects('Lead/Eventbrite_Attendee_ID__c/'.$attendees->user_id,[
     'method' => 'PATCH',
     'body'   => $data]);
 
@@ -130,7 +131,25 @@ if (isset($attendeeList[0])){
 
 $AttendeeData = [];
 
+    $firstOrderID = $attendeeList[0]->order_id; 
+	
 	foreach ($attendeeList as $key => $att) {
+	
+	//Separate Emails by order
+	if ($firstOrderID != $att->order_id){
+		if ($AttendeeData){
+		
+			$attmodel = \App\Attendees::first();
+
+			$attmodel->notify(new OrderUpdates($AttendeeData));
+			
+			$AttendeeData = [];
+			$firstOrderID = $att->order_id;
+		}
+		
+	
+	}
+	
 		$TempContainer = [];
 
 		$TempAttendee = Attendees::where('user_id', '=', $att->user_id)
