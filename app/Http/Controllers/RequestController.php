@@ -171,11 +171,15 @@ return $Hash.$fake;
     		 		//Esetleg notification handler ide
     		 		break;     		 		  
       		 	case 'attendee.updated':
+	
+				
                      $attendeeOne = Attendees::where('user_id', $data->id)
-					 ->whereDate('created_at','>', Carbon::now()->subMinutes(2))
+					 ->where('created_at','<', Carbon::now()->subMinutes(2)->toDateTimeString())
                      ->orderBy('created_at','DESC')
                      ->limit(1)
 					 ->get();
+					 
+					
                      if(isset($attendeeOne[0])){
 						
                         //If we already have a record we proceed, if not, there's a good chance that 
