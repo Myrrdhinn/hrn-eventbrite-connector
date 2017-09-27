@@ -23,6 +23,7 @@ class CreateAttendeesTable extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('work_phone')->nullable();
+			$table->string('mobile_phone')->nullable();
             $table->string('company')->nullable();
             $table->string('email')->nullable();
             $table->string('fake_email')->nullable();

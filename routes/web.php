@@ -19,6 +19,12 @@ Route::get('/', function () {
 //Eventbrite webhook receiver
 Route::any('/request', 'RequestController@index'); 
 
+//sf test route (for query testing
+Route::any('/uprequest', 'UpdateController@index'); 
+
+//sf test route (for query testing
+Route::any('/upconrequest', 'UpdateController@contact'); 
+
 //Salesforce Autentication
 Route::get('/authenticate', function()
 {

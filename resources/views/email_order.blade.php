@@ -22,7 +22,13 @@
             <th class="small-12 large-8 columns first"><table><tr><th>
               <p><strong>Order ID: </strong>{{ $attendee->updated->order_id }}</p>
 			  <p><strong>Attendee ID: </strong>{{ $attendee->updated->user_id }}</p>
-			  <p><strong>Order Date: </strong>{{ $attendee->updated->created_at }}</p>
+			  
+			  @if ($attendee->updated->payload_mode == 'attendee.updated') 
+			  <p><strong>Updated At: </strong>{{ $attendee->updated->created_at }}</p>
+			  @else
+			   <p><strong>Order Date: </strong>{{ $attendee->updated->created_at }}</p>
+			  @endif
+			  
             </th></tr></table></th>
           </tr></tbody></table>
 		  

@@ -116,8 +116,9 @@ return $Hash.$fake;
     		 				'last_name' =>$attendee->profile->last_name,
     		 				'full_name' =>$attendee->profile->name,
     		 				'work_phone' => $this->issetor($attendee->profile->work_phone),
+							'mobile_phone' => $this->issetor($attendee->profile->cell_phone),
     		 				'company' => $this->issetor($attendee->profile->company),
-    		 				'email' =>$attendee->profile->email,
+    		 				'email' => $this->issetor($attendee->profile->email),
     		 				'fake_email' => $this->GeraHash(8),
     		 				'job_title' => $this->issetor($attendee->profile->job_title),
     		 				'city' => $this->issetor($city),
@@ -194,7 +195,20 @@ return $Hash.$fake;
                                 $postal_code = isset($data->profile->addresses->work->postal_code) ? $data->profile->addresses->work->postal_code : null;
                                 $address = isset($data->profile->addresses->work->address_1) ? $data->profile->addresses->work->address_1 : null;
                                 $country = isset($data->profile->addresses->work->country) ? $data->profile->addresses->work->country : null;
-                                $discount = isset($data->promotional_code->code) ? $data->promotional_code->code : null;
+								
+                               if (isset($data->promotional_code->code) && $data->promotional_code->code != '' && $data->promotional_code->code != null){
+							     $discount = $data->promotional_code->code;
+								
+
+								} else {
+								   if(isset($attendeeOne[0]['discount_code'])){
+										$discount = $attendeeOne[0]['discount_code'];
+								   } else {
+										$discount = null;
+								   }
+											
+								}													
+								
 								$fakemail = isset($attendeeOne->fake_email) ? $attendeeOne->fake_email : $this->GeraHash(8);
                                 
 
@@ -206,6 +220,7 @@ return $Hash.$fake;
                                     'last_name' =>$data->profile->last_name,
                                     'full_name' =>$data->profile->name,
                                     'work_phone' =>$data->profile->work_phone,
+									'mobile_phone' => $this->issetor($data->profile->cell_phone),
                                     'company' =>$data->profile->company,
                                     'email' =>$data->profile->email,
                                     'fake_email' => $fakemail,
