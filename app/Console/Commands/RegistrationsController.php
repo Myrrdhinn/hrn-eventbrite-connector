@@ -28,7 +28,7 @@ class RegistrationsController {
 				
     $data = [
     		'Email' => $attendees->email, //email
-			'Phone' => $attendees->work_phone, //Genereal Phone
+			'DirectPhone__c' => $attendees->work_phone, //Genereal Phone
 			'FirstName' => $attendees->first_name, //First Name
 			'LastName' => $attendees->last_name, //Last Name
 			'Website' => '.', //Website
@@ -41,7 +41,7 @@ class RegistrationsController {
 			'Eventbrite_Order_Id__c' => $attendees->order_id, //Order Id	
 			'DirectPhone__c' => $attendees->mobile_phone, //mobile phone			
 			'City' => $attendees->city, //City
-			"MailingCountry__c" => $this->code_to_country($attendees->country),
+			"MailingCountry__c" => $attendees->country,
 			"Street" => $attendees->address,
 			"PostalCode" => $attendees->postal_code,
 			'Eventbrite_Order_Status__c' => $attendees->attendee_status, //Attendee status	

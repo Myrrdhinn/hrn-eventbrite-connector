@@ -106,7 +106,7 @@ return $Hash.$fake;
     		 			$address = isset($attendee->profile->addresses->work->address_1) ? $attendee->profile->addresses->work->address_1 : null;
     		 			$country = isset($attendee->profile->addresses->work->country) ? $attendee->profile->addresses->work->country : null;
     		 			$discount = isset($attendee->promotional_code->code) ? $attendee->promotional_code->code : null;
-    		 			
+    		 			if($attendee->profile->email == '.'){$attendee->profile->email = null;}
 
     		 			Attendees::create([
     		 				'user_id' => $attendee->id,
